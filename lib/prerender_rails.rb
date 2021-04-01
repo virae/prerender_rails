@@ -131,7 +131,7 @@ module Rack
       is_requesting_prerendered_page = true if buffer_agent
 
       #if it is an IP address from the allow list
-      is_requesting_prerendered_page = true if @prerender_for_ip_addresses.is_a?(Array) && env['HTTP_X_FORWARDED_FOR'] && @prerender_for_ip_addresses.any? { |ip| env['HTTP_X_FORWARDED_FOR'].include?(ip) }
+      is_requesting_prerendered_page = true if @prerender_for_ip_addresses.is_a?(Array) && env['REMOTE_ADDR'] && @prerender_for_ip_addresses.any? { |ip| env['REMOTE_ADDR'].split(',').include?(ip) }
 
       #if it is Prerender...don't show prerendered page
       is_requesting_prerendered_page = false if prerender_agent
