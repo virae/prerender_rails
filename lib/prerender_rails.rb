@@ -122,6 +122,8 @@ module Rack
 
       request = Rack::Request.new(env)
 
+      client_ip = (env['action_dispatch.remote_ip'] || request.ip).to_s
+
       is_requesting_prerendered_page = true if Rack::Utils.parse_query(request.query_string).has_key?('_escaped_fragment_')
 
       #if it is a bot...show prerendered page
@@ -131,7 +133,7 @@ module Rack
       is_requesting_prerendered_page = true if buffer_agent
 
       #if it is an IP address from the allow list
-      is_requesting_prerendered_page = true if @prerender_for_ip_addresses.is_a?(Array) && request.remote_ip && @prerender_for_ip_addresses.include?(request.remote_ip)
+      is_requesting_prerendered_page = true if @prerender_for_ip_addresses.is_a?(Array) && client_ip && @prerender_for_ip_addresses.include?(client_ip)
 
       #if it is Prerender...don't show prerendered page
       is_requesting_prerendered_page = false if prerender_agent
