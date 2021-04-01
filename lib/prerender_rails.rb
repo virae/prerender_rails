@@ -84,6 +84,7 @@ module Rack
       @options[:blacklist] = [@options[:blacklist]] if @options[:blacklist].is_a? String
       @extensions_to_ignore = @options[:extensions_to_ignore] if @options[:extensions_to_ignore]
       @crawler_user_agents = @options[:crawler_user_agents] if @options[:crawler_user_agents]
+      @prerender_for_ip_addresses = @options[:prerender_for_ip_addresses] if @options[:prerender_for_ip_addresses].is_a? Array
       @app = app
     end
 
@@ -128,6 +129,9 @@ module Rack
 
       #if it is BufferBot...show prerendered page
       is_requesting_prerendered_page = true if buffer_agent
+
+      #if it is an IP address from the allow list
+      is_requesting_prerendered_page = true if @prerender_for_ip_addresses.is_a?(Array) && request.remote_ip && @prerender_for_ip_addresses.include?(request.remote_ip)
 
       #if it is Prerender...don't show prerendered page
       is_requesting_prerendered_page = false if prerender_agent
